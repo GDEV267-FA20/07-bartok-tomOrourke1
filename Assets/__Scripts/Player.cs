@@ -25,6 +25,17 @@ public class Player
 
         // Add the card to the hand
         hand.Add(eCB);
+        // Sort the cards by rank using LINQ if this is a human
+        if (type == PlayerType.human)
+        {
+            CardBartok[] cards = hand.ToArray();                              // a
+            // This is the LINQ call
+            cards = cards.OrderBy(cd => cd.rank).ToArray();                 // b
+            hand = new List<CardBartok>(cards);                               // c
+            // Note: LINQ operations can be a bit slow (like it could take a
+            // couple of milliseconds), but since we're only doing it once
+            // every round, it isn't a problem.
+        }
         FanHand();
         return (eCB);
     }
