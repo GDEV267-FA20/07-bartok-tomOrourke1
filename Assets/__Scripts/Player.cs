@@ -36,6 +36,10 @@ public class Player
             // couple of milliseconds), but since we're only doing it once
             // every round, it isn't a problem.
         }
+
+        eCB.SetSortingLayerName("10"); // Sorts the moving card to the top   // a
+        eCB.eventualSortLayer = handSlotDef.layerName;
+
         FanHand();
         return (eCB);
     }
@@ -72,14 +76,26 @@ public class Player
             // Add the base position of the player's hand (which will be at the
             // bottom-center of the fan of the cards)
             pos += handSlotDef.pos;                                          // f
-            pos.z = -0.5f * i;                                                 // g
+            pos.z = -0.5f * i;
+
             // Set the localPosition and rotation of the ith card in the hand
+
+            hand[i].MoveTo(pos, rotQ); // Tell CardBartok to interpolate
+
+            hand[i].state = CBState.toHand;
+
+            // After the move, CardBartok will set the state to CBState.hand
+
+            /*
             hand[i].transform.localPosition = pos;                           // h
             hand[i].transform.rotation = rotQ;
             hand[i].state = CBState.hand;
+            */
+
             hand[i].faceUp = (type == PlayerType.human);                     // i
             // Set the SortOrder of the cards so that they overlap properly
-            hand[i].SetSortOrder(i * 4);                                       // j
+            hand[i].eventualSortOrder = i * 4;
+            //hand[i].SetSortOrder(i * 4);                                       // j
         }
 
     }

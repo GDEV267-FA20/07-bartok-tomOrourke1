@@ -61,7 +61,9 @@ public class CardBartok : Card
     public List<Quaternion> bezierRots;
 
     public float timeStart, timeDuration;
-
+    
+    public int eventualSortOrder;
+    public string eventualSortLayer;
 
 
     // When the card is done moving, it will call reportFinishTo.SendMessage()
@@ -213,6 +215,21 @@ public class CardBartok : Card
 
                     transform.rotation = rotQ;
 
+
+                    if (u > 0.5f)
+                    {                                           // a
+                        SpriteRenderer sRend = spriteRenderers[0];
+                        if (sRend.sortingOrder != eventualSortOrder)
+                        {
+                            // Jump to the proper sort order
+                            SetSortOrder(eventualSortOrder);
+                        }
+                        if (sRend.sortingLayerName != eventualSortLayer)
+                        {
+                            // Jump to the proper sort layer
+                            SetSortingLayerName(eventualSortLayer);
+                        }
+                    }
                 }
 
                 break;
