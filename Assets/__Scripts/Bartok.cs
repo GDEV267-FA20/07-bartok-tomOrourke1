@@ -223,6 +223,83 @@ public class Bartok : MonoBehaviour
         drawPile.RemoveAt(0);            // Then remove it from List<> drawPile
         return (cd);                      // And return it
     }
+
+
+
+
+    public void CardClicked(CardBartok tCB)
+    {
+
+        if (CURRENT_PLAYER.type != PlayerType.human) return;                 // a
+
+        if (phase == TurnPhase.waiting) return;                              // b
+
+
+
+        switch (tCB.state)
+        {                                                 // c
+
+            case CBState.drawpile:                                           // d
+
+                // Draw the top card, not necessarily the one clicked.
+
+                CardBartok cb = CURRENT_PLAYER.AddCard(Draw());
+
+                cb.callbackPlayer = CURRENT_PLAYER;
+
+                Utils.tr("Bartok:CardClicked()", "Draw", cb.name);
+
+                phase = TurnPhase.waiting;
+
+                break;
+
+
+
+            case CBState.hand:                                               // e
+
+                // Check to see whether the card is valid
+
+                if (ValidPlay(tCB))
+                {
+
+                    CURRENT_PLAYER.RemoveCard(tCB);
+
+                    MoveToTarget(tCB);
+
+                    tCB.callbackPlayer = CURRENT_PLAYER;
+
+                    Utils.tr("Bartok:CardClicked()", "Play", tCB.name,
+
+                        targetCard.name + " is target");                    // f
+
+                    phase = TurnPhase.waiting;
+
+                }
+                else
+                {
+
+                    // Just ignore it but report what the player tried
+
+                    Utils.tr("Bartok:CardClicked()", "Attempted to Play",
+
+                        tCB.name, targetCard.name + " is target");            // f
+
+                }
+
+                break;
+
+        }
+
+    }
+
+
+
+
+
+
+
+
+
     /*
     // This Update() is temporarily used to test adding cards to players' hands
     void Update()

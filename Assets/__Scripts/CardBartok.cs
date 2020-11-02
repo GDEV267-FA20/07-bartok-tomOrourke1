@@ -70,7 +70,8 @@ public class CardBartok : Card
 
     public GameObject reportFinishTo = null;
 
-
+    [System.NonSerialized]
+    public Player callbackPlayer = null;
 
     // MoveTo tells the card to interpolate to a new position and rotation
 
@@ -196,6 +197,13 @@ public class CardBartok : Card
                         reportFinishTo = null;
 
                     }
+                    else if(callbackPlayer != null)
+                    {
+                        // If there's a callback Player
+                        // Call CBCallback directly on the Player
+                        callbackPlayer.CBCallback(this);
+                        callbackPlayer = null;
+                    }
                     else
                     { // If there is nothing to callback
 
@@ -239,5 +247,21 @@ public class CardBartok : Card
 
 
     }
+
+    // This allows the card to react to being clicked
+
+    override public void OnMouseUpAsButton()
+    {
+
+        // Call the CardClicked method on the Bartok singleton
+
+        Bartok.S.CardClicked(this);                                          // a
+
+        // Also call the base class (Card.cs) version of this method
+
+        base.OnMouseUpAsButton();
+
+    }
+
 
 }
