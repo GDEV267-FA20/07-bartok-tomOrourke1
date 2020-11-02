@@ -220,6 +220,54 @@ public class Bartok : MonoBehaviour
     public CardBartok Draw()
     {
         CardBartok cd = drawPile[0];     // Pull the 0th CardProspector
+
+        if (drawPile.Count == 0)
+        {       // If the drawPile is now empty
+
+            // We need to shuffle the discards into the drawPile
+
+            int ndx;
+
+            while (discardPile.Count > 0)
+            {
+
+                // Pull a random card from the discard pile
+
+                ndx = Random.Range(0, discardPile.Count);                    // a
+
+                drawPile.Add(discardPile[ndx]);
+
+                discardPile.RemoveAt(ndx);
+
+            }
+
+            ArrangeDrawPile();
+
+            // Show the cards moving to the drawPile
+
+            float t = Time.time;
+
+            foreach (CardBartok tCB in drawPile)
+            {
+
+                tCB.transform.localPosition = layout.discardPile.pos;
+
+                tCB.callbackPlayer = null;
+
+                tCB.MoveTo(layout.drawPile.pos);
+
+                tCB.timeStart = t;
+
+                t += 0.02f;
+
+                tCB.state = CBState.toDrawpile;
+
+                tCB.eventualSortLayer = "0";
+
+            }
+
+        }
+
         drawPile.RemoveAt(0);            // Then remove it from List<> drawPile
         return (cd);                      // And return it
     }
