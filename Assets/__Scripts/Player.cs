@@ -157,7 +157,7 @@ public class Player
 
         if(cb.rank == 2)
         {
-
+            Bartok.S.DrawNum = 2;
             Bartok.S.DrawTurn();
 
         }

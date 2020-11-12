@@ -35,6 +35,13 @@ public class Bartok : MonoBehaviour
     private BartokLayout layout;
     private Transform layoutAnchor;
 
+
+    private float timePassed;
+    private bool cardDraw = false;
+    private int counter = 0;
+    private int drawNum = 0;
+    public int DrawNum { set => drawNum = value; }
+
     void Awake()
     {
         S = this;
@@ -52,6 +59,30 @@ public class Bartok : MonoBehaviour
 
         LayoutGame();
     }
+
+    void Update()
+    {
+        if(cardDraw)
+        {
+            timePassed += Time.deltaTime;
+            if(timePassed >= 0.5f)
+            {
+                CURRENT_PLAYER.AddCard(Draw());
+                timePassed = 0;
+                counter++;
+            }
+
+            if(counter >= drawNum)
+            {
+                cardDraw = false;
+                counter = 0;
+                PassTurn();
+            }
+        }
+
+
+    }
+    
 
     List<CardBartok> UpgradeCardsList(List<Card> lCD)
     {                   // a
@@ -349,6 +380,7 @@ public class Bartok : MonoBehaviour
 
                     if (tCB.rank == 2)
                     {
+                        DrawNum = 2;
                         DrawTurn();
                         
                         
@@ -385,7 +417,6 @@ public class Bartok : MonoBehaviour
 
 
 
-
     public void DrawTurn(int num = -1)
     {                                       // f
         // If no number was passed in, pick the next player
@@ -410,19 +441,21 @@ public class Bartok : MonoBehaviour
         CURRENT_PLAYER = players[num];
         phase = TurnPhase.pre;
 
-        CURRENT_PLAYER.AddCard(Draw());
-        CURRENT_PLAYER.AddCard(Draw());
 
-        num = (num + 1) % 4;
-        CURRENT_PLAYER = players[num];
-        CURRENT_PLAYER.TakeTurn();
+        cardDraw = true;
+
+
+ //       CURRENT_PLAYER.AddCard(Draw());
+    //    CURRENT_PLAYER.AddCard(Draw());
+
+        
 
 
 
         // Report the turn passing
-        Utils.tr("Bartok:PassTurn()", "Old: " + lastPlayerNum,                     // h
-                 "New: " + CURRENT_PLAYER.playerNum);                              // h
+        //Utils.tr("Bartok:PassTurn()", "Old: " + lastPlayerNum,    "New: " + CURRENT_PLAYER.playerNum);    
     }
+
 
 
 
