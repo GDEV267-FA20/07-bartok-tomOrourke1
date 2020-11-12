@@ -173,6 +173,8 @@ public class Bartok : MonoBehaviour
 
     }
 
+
+
     public bool CheckGameOver()
     {
         // See if we need to reshuffle the discard pile into the draw pile
@@ -200,16 +202,11 @@ public class Bartok : MonoBehaviour
 
         return (false);
     }
-
-
     public void RestartGame()
     {
         CURRENT_PLAYER = null;
         SceneManager.LoadScene("__Bartok_Scene_0");
     }
-
-
-
     // ValidPlay verifies that the card chosen can be played on the discard pile
     public bool ValidPlay(CardBartok cb)
     {
@@ -225,8 +222,6 @@ public class Bartok : MonoBehaviour
         // Otherwise, return false
         return (false);
     }
-
-
     // This makes a new card the target
     public CardBartok MoveToTarget(CardBartok tCB)
     {
@@ -256,8 +251,6 @@ public class Bartok : MonoBehaviour
 
         return (tCB);
     }
-
-
     // The Draw function will pull a single card from the drawPile and return it
     public CardBartok Draw()
     {
@@ -313,10 +306,6 @@ public class Bartok : MonoBehaviour
         drawPile.RemoveAt(0);            // Then remove it from List<> drawPile
         return (cd);                      // And return it
     }
-
-
-
-
     public void CardClicked(CardBartok tCB)
     {
 
@@ -356,13 +345,25 @@ public class Bartok : MonoBehaviour
 
                     MoveToTarget(tCB);
 
-                    tCB.callbackPlayer = CURRENT_PLAYER;
 
-                    Utils.tr("Bartok:CardClicked()", "Play", tCB.name,
 
-                        targetCard.name + " is target");                    // f
+                    if (tCB.rank == 2)
+                    {
+                        DrawTurn();
+                        
+                        
+                    }
+                    else
+                    {
 
-                    phase = TurnPhase.waiting;
+                        tCB.callbackPlayer = CURRENT_PLAYER;
+                        Utils.tr("Bartok:CardClicked()", "Play", tCB.name, targetCard.name + " is target");                    // f
+
+                        phase = TurnPhase.waiting;
+
+                    }
+
+                    
 
                 }
                 else
@@ -385,7 +386,43 @@ public class Bartok : MonoBehaviour
 
 
 
+    public void DrawTurn(int num = -1)
+    {                                       // f
+        // If no number was passed in, pick the next player
+        if (num == -1)
+        {
+            int ndx = players.IndexOf(CURRENT_PLAYER);
+            num = (ndx + 1) % 4;
+        }
+        int lastPlayerNum = -1;
+        if (CURRENT_PLAYER != null)
+        {
+            lastPlayerNum = CURRENT_PLAYER.playerNum;
+            // Check for Game Over and need to reshuffle discards
+            if (CheckGameOver())
+            {
+                return;                                                      // a
+            }
+        }
 
+
+
+        CURRENT_PLAYER = players[num];
+        phase = TurnPhase.pre;
+
+        CURRENT_PLAYER.AddCard(Draw());
+        CURRENT_PLAYER.AddCard(Draw());
+
+        num = (num + 1) % 4;
+        CURRENT_PLAYER = players[num];
+        CURRENT_PLAYER.TakeTurn();
+
+
+
+        // Report the turn passing
+        Utils.tr("Bartok:PassTurn()", "Old: " + lastPlayerNum,                     // h
+                 "New: " + CURRENT_PLAYER.playerNum);                              // h
+    }
 
 
 

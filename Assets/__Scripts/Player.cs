@@ -148,10 +148,29 @@ public class Player
         }
 
         // So, there is a card or more to play, so pick one
+
+
         cb = validCards[Random.Range(0, validCards.Count)];                // d
         RemoveCard(cb);
         Bartok.S.MoveToTarget(cb);
-        cb.callbackPlayer = this;                                            // e
+
+
+        if(cb.rank == 2)
+        {
+
+            Bartok.S.DrawTurn();
+
+        }
+        else
+        {
+            cb.callbackPlayer = this;
+        }
+
+        
+
+
+
+
     }
 
     public void CBCallback(CardBartok tCB)
