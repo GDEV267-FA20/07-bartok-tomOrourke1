@@ -67,17 +67,27 @@ public class Bartok : MonoBehaviour
             timePassed += Time.deltaTime;
             if(timePassed >= 0.5f)
             {
-                CURRENT_PLAYER.AddCard(Draw());
+
                 timePassed = 0;
-                counter++;
+                if (counter < drawNum)
+                {
+                    CURRENT_PLAYER.AddCard(Draw());
+                    counter++;
+                }
+                else
+                {
+                    cardDraw = false;
+                    counter = 0;
+                    PassTurn();
+                }
+
+
             }
 
-            if(counter >= drawNum)
-            {
-                cardDraw = false;
-                counter = 0;
-                PassTurn();
-            }
+            
+
+
+
         }
 
 
